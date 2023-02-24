@@ -1,17 +1,23 @@
 const people = ['Peter', 'Anna', 'Mary', 'John', 'Alex'];
-
-// 1. Loop through the array with an array-method and print every name to the console
+// 1. Loop through the array with an array-method and print every name to the terminal
+people.forEach(person => console.log(person));
 
 
 /* 
     2. Create a new array from the people-array, where every name is concatenated with a number indicating the element's index.
     e.g.: ['Peter', 'Anna', 'Mary', 'John', 'Alex'] -> ['1. Peter', '2. Anna', '3. Mary', '4. John', '5. Alex']
 */
+const indexedPeople = people.map((person, idx) => `${idx+1}. ${person}`);
+console.log(indexedPeople);
+
 
 const trashBin = ['Banana scale', 'Vegetable leftovers', 123, 'Some paper', true, 'Plastic Packaging'];
 /* 
-    3. Create a new filtered array from the trashBin-array, where all elements that aren't of type 'String' are filtered out.
+    3. Create a new filtered array from the trashBin-array, where all elements that aren't of type 'string' are filtered out.
 */
+const filteredTrashBin = trashBin.filter(elem => (typeof elem) === 'string');
+console.log(filteredTrashBin);
+
 
 const unfilteredTrash = [
     {
@@ -65,7 +71,57 @@ const unfilteredTrash = [
         ]
     }
 */
+// more simple, but still effective solution by use of .forEach
+// function sortWaste(trashBin) {
+//     const result = {
+//         bio: [],
+//         paper: [],
+//         plastic: []
+//     };
 
+//     trashBin.forEach(elem => {
+//         switch(elem.kind) {
+//             case 'bio':
+//                 result.bio.push(elem);
+//                 break;
+
+//             case 'paper':
+//                 result.paper.push(elem);
+//                 break;
+
+//             case 'plastic':
+//                 result.plastic.push(elem);
+//                 break;
+
+//             default:
+//                 console.log('Doesnt fit any bin');
+//                 break;
+//         }
+//     });
+
+//     return result;
+// }
+// console.log(sortWaste(unfilteredTrash));
+
+// a little bit more sophisticated by use of .reduce
+function sortWaste(trashArray) {
+    return trashArray.reduce((sortedWaste, item) => {
+      switch(item.kind) {
+        case 'bio':
+            sortedWaste.bio.push(item);
+            return sortedWaste;
+        case 'paper':
+            sortedWaste.paper.push(item);
+            return sortedWaste;
+        case 'plastic':
+            sortedWaste.plastic.push(item);
+            return sortedWaste;
+      }
+
+      return sortedWaste;
+    }, { bio: [], paper: [], plastic: [] });
+}
+console.log(sortWaste(unfilteredTrash));
 
 const clothes = [
     {
@@ -104,13 +160,23 @@ const clothes = [
     A clothing object consists of a name-property, a numeric size-property and a color-string-property.
     Find a way to sort the clothes-array in ascending order by their numeric size.
 */
+// In order to keep the original array unsorted, we create a new shallow copy of it to run .sort on it
+const clothesCopy = [...clothes];
+clothesCopy.sort((a, b) => {
+    if (a.size < b.size) return -1;
+    if (a.size > b.size) return 1;
+    return 0;
+});
+console.log(clothesCopy);
 
 /* 
     6. Since you've found a way to sort the clothes by their size, let's write a more universal sorting function for the clothes
     which you can tell what field to sort by and in which order.
-    The usage could look like this: sortClothes('name', 'desc'); // Which means, please sort by the name-property in descending order
+    The usage could look like this: sortClothes(clothes, 'name', 'desc'); // Which means, please sort 'clothes' by the name-property in descending order
 */
-
+function sortClothes(arr, field, dir) {
+    
+}
 
 /*
     7. Write a function addClothing(clothingObject) that takes a new clothing object as its argument and inserts it into the existing clothing-array in the sorted order (sorted ascending by size).
