@@ -161,11 +161,12 @@ const clothes = [
     Find a way to sort the clothes-array in ascending order by their numeric size.
 */
 // In order to keep the original array unsorted, we create a new shallow copy of it to run .sort on it
+// Create a local copy of the clothes-array since the .sort method sorts in place
 const clothesCopy = [...clothes];
 clothesCopy.sort((a, b) => {
     if (a.size < b.size) return -1;
     if (a.size > b.size) return 1;
-    return 0;
+    return 0; // values are equal
 });
 console.log(clothesCopy);
 
@@ -174,15 +175,40 @@ console.log(clothesCopy);
     which you can tell what field to sort by and in which order.
     The usage could look like this: sortClothes(clothes, 'name', 'desc'); // Which means, please sort 'clothes' by the name-property in descending order
 */
-function sortClothes(arr, field, dir) {
-    
+function sortClothes(clothes, prop, dir) {
+    // Run the .sort method on a local shallow copy of the passed array
+    return [...clothes].sort((a, b) => {
+        // The sorting direction doesn't matter when the values are equal
+        if (a[prop] === b[prop]) return 0;
+
+        if (a[prop] < b[prop]) return (dir === 'asc') ? -1 : 1;
+        if (a[prop] > b[prop]) return (dir === 'asc') ? 1 : -1;
+    });
 }
+console.log(sortClothes(clothes, 'color', 'desc'));
 
 /*
     7. Write a function addClothing(clothingObject) that takes a new clothing object as its argument and inserts it into the existing clothing-array in the sorted order (sorted ascending by size).
     The function's return value should be the sorted clothing-array including the new clothing object.
 */
+// Adding the cloths-array as an argument to keep the function as pure a possible
+function addClothing(clothes, clothingObj) {
+    // create a local shallow copy, because .sort sorts in-place
+    let clothesCopy = [...clothes];
 
+    // add the new clothing object to the local copy
+    clothesCopy.push(clothingObj);
+
+    // sort the extended local copy
+    return clothesCopy.sort((a, b) => {
+        // early return if values are equal
+        if (a.size === b.size) return 0;
+
+        // ternary operator for the other two options since only these two options are possible if the condition for the early return didn't suffice
+        return (a.size < b.size) ? -1 : 1;
+    });
+}
+console.log(addClothing(clothes, {name: 'Comfortable sweat pants', size: 3, color: 'simple gray'}));
 
 /* 
     8. Sometimes you want a brief overview of complex data-structes. That can be achieved by 'reducing' the complex structure into something more simple.
@@ -191,3 +217,12 @@ function sortClothes(arr, field, dir) {
     reduceToNames(clothes);
     -> ['Warm winter jacket', 'Sturdy rain coat', 'Cozy wool pullover', 'Light breezy shirt', 'Classy suit pants', 'Clowny fan cap']
 */
+function reduceToNames(clothes) {
+    // Using the .reduce method that returns a new reduced structure, based on the array it is called upon
+    return clothes.reduce((acc, elem) => {
+        // push the current item to the accumalator and return it
+        acc.push(elem.name);
+        return acc;
+    }, []); // pass an empty array as the inital value for the accumulator
+}
+console.log(reduceToNames(clothes));
