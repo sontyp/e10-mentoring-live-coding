@@ -202,3 +202,5 @@ globalFunction(() => console.log('hi'));
     It should have a method which take a new array of students as an argument and if it's an array, 
     it replaces the stored array of students in it.
 */
+
+
