@@ -3,3 +3,109 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+h1 {
+    text-align: center;
+    margin-bottom: 1em;
+}
+h2 {
+    text-align: center;
+    margin-bottom: 0.2em;
+}
+
+main {
+    display: flex;
+    justify-content: space-around;
+}
+
+#btn-fetch-books {
+    display: block;
+    margin: 1em auto;
+    padding: 1em;
+    background-color: green;
+    border-radius: 5px;
+    border: none;
+}
+
+#btn-fetch-books:active {
+    background-color: rgb(67, 167, 67);
+}
+
+#books-list {
+    border: 1px solid grey;
+    padding: 2em;
+    width: 55vw;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    overflow: scroll;
+    height: 80vh;
+}
+
+.book-tile {
+    width: 20em;
+    background-color: lightgrey;
+    padding: 1em;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.book-tile > button {
+    padding: 0.5em;
+    display: block;
+    margin: 0.2em auto;
+}
+
+#reading-list {
+    border: 1px solid grey;
+    padding: 2em;
+    width: 35vw;
+    overflow: scroll;
+    height: 80vh;
+}
+
+#btn-clear-reading-list {
+    background-color: rgb(241, 107, 17);
+    display: block;
+    margin: 1em auto;
+    padding: 1em;
+    border-radius: 5px;
+    border: none;
+}
+
+#btn-clear-reading-list:active {
+    background-color: rgb(238, 128, 55);
+}
+
+#reading-list li {
+    margin-bottom: 1em;
+}
+
+#reading-list li button {
+    margin-inline: 0.5em;
+}
+
+#reading-list li.is-read {
+    text-decoration: line-through;
+    color: grey;
+}
+#reading-list li.is-read button {
+    background-color: green;
+}
+#reading-list li.is-read button:active {
+    background-color: rgb(67, 167, 67);
+}
+
+
+
+#reading-list button {
+    padding: 0.3em;
+    background-color: red;
+    border-radius: 5px;
+    border: none;
+}
+
+#reading-list button:active {
+    background-color: rgb(206, 61, 61);
+}
+
