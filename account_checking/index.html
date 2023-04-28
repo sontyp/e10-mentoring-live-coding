@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Checker</title>
+
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script type="text/babel">
+
+        /* 
+            Checking Account App
+            Create a checking account component consisting of an h1 element that displays your current account balance,
+            and 2 input fields with buttons, one for deposits (adding money to the account) and one for withdrawals (subtracting money from the account). (This can also be done without buttons; I’ll leave it up to you how exactly you want to implement this.)
+            Use the componentDidMount() life cycle method 
+                (i) to retrieve the balance from localStorage once the App component is mounted, 
+                and (ii) to store the balance in localStorage when the window’s “beforeunload” event fires.
+        */
+        /* 
+            BONUS:
+            1. Add an input field called "Dispo Amount" where the user can set a max negative for his/her account balance.
+            This value should be stored in the state and referenced on withdrawals.
+            When withdrawing an amount that would drag the balance lower than the allowed dispo amount, the transaction should be prohibited.
+            
+            2. Create a transaction history in the state which stores every transaction made on the account (deposit/withdraw) with a timestamp and the amount.
+            The transactions should be stored as objects like this
+            {
+                type: 'withdrawal',
+                amount: 100,
+                timestamp: new Date()
+            }
+            Show this history in a table or list below
+        */
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    balance: 1000,
+                    depositAmount: 0,
+                    withdrawAmount: 0,
+                };
+
+                // When creating usual class methods, we have to re-bind their this-context to the class
+                // this.depositChangeHandler = this.depositChangeHandler.bind(this);
+            }
+
+            // overwriting the componentDidMount method from the React.Components class
+            componentDidMount() {
+                // Register an event handler for the beforeunload event
+                window.addEventListener('beforeunload', evt => {
+                    // store the current balance from the state in the localStorage for persistence
+                    localStorage.setItem('balance', this.state.balance);
+                });
+
+                // retrieve the potentially stored value for balance from the localStorage
+                const storedBalance = localStorage.getItem('balance');
+
+                // if there was a stored value
+                if (storedBalance) {
+                    // set the state of balance to the value retrieved from the localStorage
+                    this.setState({
+                        balance: Number(storedBalance)
+                    });
+                }
+            }
+
+            // A change handler method for the deposit aamount input field
+            // depositChangeHandler(evt) {
+            //     this.setState({depositAmount: evt.target.value});
+            //
+
+            // A change handler method for the deposit aamount input field
+            depositChangeHandler = (evt) => {
+                this.setState({depositAmount: Number(evt.target.value)});
+            };
+
+            depositClickHandler = (evt) => {
+                // Since we have to reference the current value in the state
+                // we pass a callback to setState with the current state as its argument
+                this.setState(state => {
+                    return {
+                        balance: state.balance + state.depositAmount,
+                        depositAmount: 0
+                    };
+                });
+            };
+
+            withdrawChangeHandler = (evt) => {
+                this.setState({withdrawAmount: Number(evt.target.value)});
+            };
+
+            withdrawClickHandler = (evt) => {
+                // Since we have to reference the current value in the state
+                // we pass a callback to setState with the current state as its argument
+                this.setState(state => {
+                    return {
+                        balance: state.balance - state.withdrawAmount,
+                        withdrawAmount: 0
+                    };
+                });
+            };
+
+            render() {
+                // destructure the state object into single constants
+                const { balance, depositAmount, withdrawAmount } = this.state;
+
+                return (
+                    <div>
+                        <h1>Balance: {balance}€</h1>
+
+                        <label htmlFor="input-deposit">Deposit</label>
+                        <input 
+                            type="number" id="input-deposit" 
+                            value={depositAmount}
+                            onChange={this.depositChangeHandler}
+                        />
+                        <button
+                            onClick={this.depositClickHandler}
+                        >Deposit</button>
+
+                        <br />
+
+                        <label htmlFor="input-withdraw">Withdraw</label>
+                        <input 
+                            type="number" id="input-withdraw"
+                            value={withdrawAmount}
+                            onChange={this.withdrawChangeHandler}
+                        />
+                        <button
+                            onClick={this.withdrawClickHandler}
+                        >Withdraw</button>
+                    </div>
+                );
+            }
+        }
+
+        const appContainer = document.querySelector('#app');
+        const root = ReactDOM.createRoot(appContainer);
+
+        root.render(<App />);
+    </script>
+</body>
+</html>
