@@ -51,6 +51,8 @@
                     balance: 1000,
                     depositAmount: 0,
                     withdrawAmount: 0,
+                    dispoAmount: 0,
+                    transactions: []
                 };
 
                 // When creating usual class methods, we have to re-bind their this-context to the class
@@ -63,16 +65,25 @@
                 window.addEventListener('beforeunload', evt => {
                     // store the current balance from the state in the localStorage for persistence
                     localStorage.setItem('balance', this.state.balance);
+                    localStorage.setItem('transactions', JSON.stringify(this.state.transactions));
                 });
 
                 // retrieve the potentially stored value for balance from the localStorage
                 const storedBalance = localStorage.getItem('balance');
+                const storedTransactions = localStorage.getItem('transactions');
 
                 // if there was a stored value
                 if (storedBalance) {
                     // set the state of balance to the value retrieved from the localStorage
                     this.setState({
                         balance: Number(storedBalance)
+                    });
+                }
+
+                if (storedTransactions) {
+                    // set the state of transaction to the value retrieved from the localStorage
+                    this.setState({
+                        transactions: JSON.parse(storedTransactions)
                     });
                 }
             }
@@ -91,31 +102,76 @@
                 // Since we have to reference the current value in the state
                 // we pass a callback to setState with the current state as its argument
                 this.setState(state => {
+                    // create a new transaction object to add to the transaction history
+                    const transaction = {
+                        type: 'deposit',
+                        amount: state.depositAmount,
+                        timestamp: new Date()
+                    };
+
                     return {
                         balance: state.balance + state.depositAmount,
-                        depositAmount: 0
+                        depositAmount: 0,
+                        // append the new transaction object to the existing ones
+                        transactions: [...state.transactions, transaction] 
                     };
                 });
             };
 
             withdrawChangeHandler = (evt) => {
-                this.setState({withdrawAmount: Number(evt.target.value)});
+                // make sure that only positive numbers can be withdrawn
+                this.setState({withdrawAmount: Math.abs(Number(evt.target.value))});
             };
 
             withdrawClickHandler = (evt) => {
-                // Since we have to reference the current value in the state
-                // we pass a callback to setState with the current state as its argument
-                this.setState(state => {
-                    return {
-                        balance: state.balance - state.withdrawAmount,
-                        withdrawAmount: 0
-                    };
+                // check whether the withdrawal would drag the balance lower than capped with the dispoAmount
+                if ((this.state.balance - this.state.withdrawAmount) >= -this.state.dispoAmount) {
+                    // Since we have to reference the current value in the state
+                    // we pass a callback to setState with the current state as its argument
+                    this.setState(state => {
+                        // create a new transaction object to add to the transaction history
+                        const transaction = {
+                            type: 'withdrawal',
+                            amount: state.withdrawAmount,
+                            timestamp: new Date()
+                        }
+
+                        return {
+                            balance: state.balance - state.withdrawAmount,
+                            withdrawAmount: 0,
+                            // append the new transaction object to the existing ones
+                            transactions: [...state.transactions, transaction]
+                        };
+                    });
+                } else {
+                    console.error('toooo muuuuch!!!11!');
+                }
+            };
+
+            // change handler for the dispo amount input field
+            dispoAmountChangeHandler = evt => {
+                this.setState({
+                    // cast the input value to a number and save it in the state
+                    dispoAmount: Number(evt.target.value)
                 });
             };
 
             render() {
                 // destructure the state object into single constants
-                const { balance, depositAmount, withdrawAmount } = this.state;
+                const { balance, depositAmount, withdrawAmount, dispoAmount, transactions } = this.state;
+
+                // Create an array of table rows made of all the transaction objects
+                // iterative rendering, you'll learn about it in class ;-)
+                const transactionRows = transactions.map((transaction, idx) => {
+                    return (
+                        <tr key={transaction.timestamp+idx}>
+                            <td>{idx+1}</td>
+                            <td>{transaction.type}</td>
+                            <td>{transaction.amount}</td>
+                            <td>{transaction.timestamp.toLocaleString()}</td>
+                        </tr>
+                    );
+                });
 
                 return (
                     <div>
@@ -142,6 +198,35 @@
                         <button
                             onClick={this.withdrawClickHandler}
                         >Withdraw</button>
+
+                        <br />
+
+                        <label htmlFor="input-dispo">Dispo Amount</label>
+                        <input 
+                            type="number" id="input-dispo"
+                            value={dispoAmount}
+                            onChange={this.dispoAmountChangeHandler}
+                        />
+
+                        <br />
+
+                        {/* Button to delete all stored transactions */}
+                        <button
+                            onClick={evt => this.setState({transactions: []})}
+                        >Clear history</button>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {transactionRows}
+                            </tbody>
+                        </table>
                     </div>
                 );
             }
