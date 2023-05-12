@@ -31,13 +31,17 @@ export default function TodoForm({newTodoCallback}) {
 
     return (
         <form
+            className="todo-form"
             onSubmit={taskSubmitHandler}
         >
             <input type="text" 
                 value={taskDesc}
                 onChange={taskChangeHandler}
             />
-            <button type="submit">ADD</button>
+            <button type="submit"
+                /* keep the submit button disabled as long as the input is empty */
+                disabled={taskDesc.length === 0}
+            >ADD</button>
         </form>
     );
 }
