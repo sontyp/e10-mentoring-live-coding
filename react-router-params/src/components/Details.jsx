@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
 
-// Import studentData from App
+import { studentData } from "../App";
 
 export default function Details() {
     const { id } = useParams();
-    // store the student's data in a state variable depending the id
+
+    // find the correct student from the data set by ID
+    const student = studentData.find(entry => entry.id === Number(id));
 
     return (
         <>
@@ -17,6 +19,9 @@ export default function Details() {
             <h3>Student</h3>
             <pre>
                 {/* Show student's data here depending on the id */}
+                {
+                    JSON.stringify(student) ?? `Student with ID ${id} not found`
+                }
             </pre>
         </>
     );
