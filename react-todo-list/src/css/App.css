@@ -1,0 +1,28 @@
+.App {
+  text-align: center;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.todo-list {
+  margin: 0 auto;
+  max-width: 45%;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.todo-list li {
+  display: flex;
+  gap: 1em;
+}
+
+.todo-form input {
+  padding: 0.5em;
+  width: 40%;
+}
+
+.todo-form button {
+  padding: 0.5em;
+}
