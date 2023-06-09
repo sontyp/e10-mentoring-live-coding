@@ -205,7 +205,14 @@
                         <input 
                             type="number" id="input-dispo"
                             value={dispoAmount}
-                            onChange={this.dispoAmountChangeHandler}
+                            // onChange={this.dispoAmountChangeHandler}
+                            onChange={evt => {
+                                console.log(`changing dispo amount to ${evt.target.value}`);
+                                this.setState({
+                                    // cast the input value to a number and save it in the state
+                                    dispoAmount: Number(evt.target.value)
+                                });
+                            }}
                         />
 
                         <br />
